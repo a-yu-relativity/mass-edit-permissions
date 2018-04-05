@@ -14,18 +14,17 @@ namespace MassEditPermissions
         private static HashSet<string> GetGroupNames(IRSAPIClient proxy, List<int> artifactIds)
         {
             var names = new HashSet<string>();
-            foreach (int artifactId in artifactIds)
+
+            // query for the name
+            ResultSet<Group> resultSet = proxy.Repositories.Group.Read(artifactIds);
+            if (resultSet.Success)
             {
-                // query for the name
-                ResultSet<Group> resultSet = proxy.Repositories.Group.Read(artifactIds);
-                if (resultSet.Success)
+                foreach (var result in resultSet.Results)
                 {
-                    foreach (var result in resultSet.Results)
-                    {
-                        names.Add(result.Artifact.Name);
-                    }
+                    names.Add(result.Artifact.Name);
                 }
             }
+
             return names;
         }
 
