@@ -65,7 +65,7 @@ namespace MassEditPermissions
                         // disable Add permission
                         docPerm.AddSelected = false;
                     }
-
+                    
                     // make changes
                     try
                     {
