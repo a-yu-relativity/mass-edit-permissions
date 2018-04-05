@@ -87,6 +87,15 @@ namespace TestConsole
             }
         }
 
+        public ConnectionHelper(string instanceUrl, string username, string password)
+        {
+            _baseUrl = instanceUrl;
+            _user = username;
+            _password = password;
+            Console.WriteLine("Using UsernamePassword");
+            _authType = Constants.Enums.AuthType.UsernamePassword;
+        }
+
 
         /// <summary>
         /// Returns the RSAPIClient with the given workspace
