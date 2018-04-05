@@ -87,6 +87,13 @@ namespace TestConsole
             }
         }
 
+
+        /// <summary>
+        /// Instantiates the connection helper with user credentials
+        /// </summary>
+        /// <param name="instanceUrl"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
         public ConnectionHelper(string instanceUrl, string username, string password)
         {
             _baseUrl = instanceUrl;
@@ -96,6 +103,23 @@ namespace TestConsole
             _authType = Constants.Enums.AuthType.UsernamePassword;
         }
 
+        /// <summary>
+        /// Tests if one can login
+        /// </summary>
+        /// <returns></returns>
+        public bool TestLogin()
+        {
+            try
+            {
+                IRSAPIClient client = GetRsapiClient();
+                client.Dispose();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Returns the RSAPIClient with the given workspace

@@ -81,28 +81,28 @@ namespace MassEditPermissions
             return true;
         }
 
-        /// <summary>
-        /// Disables the "add document" permission for specified workspaces and group combinations
-        /// </summary>
-        /// <param name="mgr">Permission manager service</param>
-        /// <param name="workspaceIds">The list of workspace IDs that we want to do this for</param>
-        /// <param name="groupIds">The artifact IDs of the groups whose add document permission we want to revoke</param>
-        /// <returns></returns>
-        public static async Task<bool> DisableAddDocAsync(IPermissionManager mgr, ISet<int> workspaceIds, ISet<int> groupIds)
-        {
-            bool success = false;
+        ///// <summary>
+        ///// Disables the "add document" permission for specified workspaces and group combinations
+        ///// </summary>
+        ///// <param name="mgr">Permission manager service</param>
+        ///// <param name="workspaceIds">The list of workspace IDs that we want to do this for</param>
+        ///// <param name="groupIds">The artifact IDs of the groups whose add document permission we want to revoke</param>
+        ///// <returns></returns>
+        //public static async Task<bool> DisableAddDocAsync(IPermissionManager mgr, ISet<int> workspaceIds, ISet<int> groupIds)
+        //{
+        //    bool success = false;
 
-            foreach (int workspaceId in workspaceIds)
-            {
-                success = await DisableAddDocInWorkspaceForGroups(mgr, workspaceId, groupIds);
-                // if we failed, break
-                if (!success)
-                {
-                    break;
-                }
-            }
+        //    foreach (int workspaceId in workspaceIds)
+        //    {
+        //        success = await DisableAddDocInWorkspaceForGroups(mgr, workspaceId, groupIds);
+        //        // if we failed, break
+        //        if (!success)
+        //        {
+        //            break;
+        //        }
+        //    }
 
-            return success;
-        }
+        //    return success;
+        //}
     }
 }

@@ -14,8 +14,27 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            string currDir = Environment.CurrentDirectory;
-            string groupsFileName = "groups.txt";
+            // introduction
+            const string groupsFileName = "groups.txt";
+            Console.WriteLine("This console app will disable the 'add document' permission for a list of groups.");
+            Console.WriteLine($"Please ensure that there is a text file named '{groupsFileName}'.");
+            Console.WriteLine("Each line in the file should indicate a group's Artifact ID");
+            string url = String.Empty;
+            string user = String.Empty;
+            string pw = String.Empty;
+            bool successfulLogin = false;
+            while (!successfulLogin)
+            {
+                successfulLogin = ReadUserInput(out url, out user, out pw);
+                if (!successfulLogin)
+                {
+                    Console.WriteLine("Failed to login! Try again.");
+                    Console.WriteLine("---");
+                }
+            }
+            var connHelper = new ConnectionHelper(url, user, pw);
+
+            string currDir = Environment.CurrentDirectory;          
             string groupsFilePath = currDir + @"\" + groupsFileName;
             string[] groupsIdsStr = File.ReadAllLines(groupsFilePath);
 
@@ -31,8 +50,6 @@ namespace TestConsole
             List<int> workspaceIds;
 
             // instantiate IRSAPIClient
-            const string credsFile = @"C:\Creds\creds.txt";
-            var connHelper = new ConnectionHelper(credsFile);
             using (IRSAPIClient proxy = connHelper.GetRsapiClient())
             {
                 workspaceIds = MassEditPermissions.Methods.GetAllWorkspaceIds(proxy);
@@ -63,6 +80,41 @@ namespace TestConsole
 
             Pause();
         }
+
+
+        /// <summary>
+        /// Reads in and validates the user credentials by attempting to log in
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="user"></param>
+        /// <param name="pw"></param>
+        /// <returns></returns>
+        private static bool ReadUserInput(out string url, out string user, out string pw)
+        {
+            Console.WriteLine("Please enter your Relativity instance URL (e.g. https://my-instance.com).");
+            url = Console.ReadLine();
+            Console.WriteLine("Please enter your Relativity username (e.g. albert.einstein@relativity.com).");
+            user = Console.ReadLine();
+            Console.WriteLine("Please enter your Relativity password. This will be hidden.");
+            StringBuilder pwBuilder = new StringBuilder();
+            // hide password
+            while (true)
+            {
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine();
+                    break;
+                }
+                Console.Write("*");
+                pwBuilder.Append(key.KeyChar);
+            }
+            pw = pwBuilder.ToString();
+            
+            var connHelper = new ConnectionHelper(url, user, pw);
+            return connHelper.TestLogin();
+        }
+
 
         private static void Pause()
         {
