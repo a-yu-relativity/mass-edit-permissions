@@ -29,6 +29,12 @@ namespace MassEditPermissions
             return names;
         }
 
+
+        /// <summary>
+        /// Returns all of the workspace IDs for a given group
+        /// </summary>
+        /// <param name="proxy"></param>
+        /// <returns></returns>
         public static List<int> GetAllWorkspaceIds(IRSAPIClient proxy)
         {
             List<int> workspaceIds = new List<int>();
@@ -49,6 +55,15 @@ namespace MassEditPermissions
             return workspaceIds;
         }
 
+
+        /// <summary>
+        /// Disables the "add document" permission for a list of group IDs for a particular workspace.
+        /// </summary>
+        /// <param name="mgr">Permission manager service</param>
+        /// <param name="rsapi">RSAPI client</param>
+        /// <param name="workspaceId">the ID of the workspace whose permissions we are modifying</param>
+        /// <param name="groupIds">the groups whose permissions we are modifying</param>
+        /// <returns></returns>
         public static async Task<bool> DisableAddDocInWorkspaceForGroups(
             IPermissionManager mgr,
             IRSAPIClient rsapi,

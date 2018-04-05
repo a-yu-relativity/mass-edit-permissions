@@ -105,7 +105,7 @@ namespace TestConsole
             url = Console.ReadLine();
             Console.WriteLine("Please enter your Relativity username (e.g. albert.einstein@relativity.com).");
             user = Console.ReadLine();
-            Console.WriteLine("Please enter your Relativity password. This will be hidden.");
+            Console.WriteLine("Please enter your Relativity password. The cursor will not move.");
             StringBuilder pwBuilder = new StringBuilder();
             // hide password
             while (true)
