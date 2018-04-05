@@ -116,7 +116,7 @@ namespace TestConsole
                     Console.WriteLine();
                     break;
                 }
-                if (key.Key == ConsoleKey.Backspace)
+                if (key.Key == ConsoleKey.Backspace && pwBuilder.Length > 0)
                 {
                     // remove last element
                     pwBuilder.Remove(pwBuilder.Length - 1, 1);                    
