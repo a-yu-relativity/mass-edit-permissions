@@ -12,6 +12,24 @@ namespace MassEditPermissions
 {
     public static class Methods
     {
+        private static HashSet<string> GetGroupNames(IRSAPIClient proxy, List<int> artifactIds)
+        {
+            var names = new HashSet<string>();
+            foreach (int artifactId in artifactIds)
+            {
+                // query for the name
+                ResultSet<Group> resultSet = proxy.Repositories.Group.Read(artifactIds);
+                if (resultSet.Success)
+                {
+                    foreach (var result in resultSet.Results)
+                    {
+                        names.Add(result.Artifact.Name);
+                    }
+                }
+            }
+            return names;
+        }
+
         public static List<int> GetAllWorkspaceIds(IRSAPIClient proxy)
         {
             List<int> workspaceIds = new List<int>();
@@ -33,9 +51,10 @@ namespace MassEditPermissions
         }
 
         public static async Task<bool> DisableAddDocInWorkspaceForGroups(
-            IPermissionManager mgr, 
+            IPermissionManager mgr,
+            IRSAPIClient rsapi,
             int workspaceId,
-            ISet<int> groupIds)
+            List<int> groupIds)
         {
             // get group selector for workspace
             GroupSelector sel;
@@ -48,11 +67,14 @@ namespace MassEditPermissions
                 return false;
             }
 
+            // get group names
+            HashSet<string> groupNames = GetGroupNames(rsapi, groupIds);
+
             foreach (GroupRef group in sel.EnabledGroups)
             {
                 // see if the group is one whose permissions
                 // we would like to disable
-                if (groupIds.Contains(group.ArtifactID))
+                if (groupNames.Contains(group.Name))
                 {
                     GroupPermissions permissions = await mgr.GetWorkspaceGroupPermissionsAsync(workspaceId, group);
                     // get object permissions

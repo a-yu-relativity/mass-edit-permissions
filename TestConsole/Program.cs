@@ -48,8 +48,7 @@ namespace TestConsole
                 return;
             }        
 
-            // store in hash set for faster inclusion testing
-            HashSet<int> groupIds = new HashSet<int>();
+            var groupIds = new List<int>();
             foreach (var groupStr in groupsIdsStr)
             {
                 int groupId = Int32.Parse(groupStr);
@@ -70,6 +69,7 @@ namespace TestConsole
                 // instantiate IPermissionManager
                 ServiceFactory serviceFactory = connHelper.GetServiceFactory();
                 using (IPermissionManager mgr = serviceFactory.CreateProxy<IPermissionManager>())
+                using (IRSAPIClient rsapi = connHelper.GetRsapiClient())
                 {
                     int successCount = 0;
                     foreach (int workspaceId in workspaceIds)
@@ -77,7 +77,7 @@ namespace TestConsole
                         bool success = false;
                         Task.Run(async () =>
                         {
-                            success = await MassEditPermissions.Methods.DisableAddDocInWorkspaceForGroups(mgr, workspaceId, groupIds);
+                            success = await MassEditPermissions.Methods.DisableAddDocInWorkspaceForGroups(mgr, rsapi, workspaceId, groupIds);
                         }).Wait();
                         if (success)
                         {
@@ -105,7 +105,7 @@ namespace TestConsole
             url = Console.ReadLine();
             Console.WriteLine("Please enter your Relativity username (e.g. albert.einstein@relativity.com).");
             user = Console.ReadLine();
-            Console.WriteLine("Please enter your Relativity password. This will be hidden.");
+            Console.WriteLine("Please enter your Relativity password. This will be hidden, and please do not backspace.");
             StringBuilder pwBuilder = new StringBuilder();
             // hide password
             while (true)

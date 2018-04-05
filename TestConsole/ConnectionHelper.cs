@@ -99,7 +99,6 @@ namespace TestConsole
             _baseUrl = instanceUrl;
             _user = username;
             _password = password;
-            Console.WriteLine("Using UsernamePassword");
             _authType = Constants.Enums.AuthType.UsernamePassword;
         }
 
