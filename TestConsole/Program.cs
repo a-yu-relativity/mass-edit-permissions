@@ -36,7 +36,17 @@ namespace TestConsole
 
             string currDir = Environment.CurrentDirectory;          
             string groupsFilePath = currDir + @"\" + groupsFileName;
-            string[] groupsIdsStr = File.ReadAllLines(groupsFilePath);
+            string[] groupsIdsStr;
+            try
+            {
+                groupsIdsStr = File.ReadAllLines(groupsFilePath);
+            }
+            catch (IOException)
+            {
+                Console.WriteLine($"Failed to read file at {groupsFilePath}.");
+                Console.WriteLine($"Ensure that {groupsFileName} exists in the same folder as the executable.");
+                return;
+            }        
 
             // store in hash set for faster inclusion testing
             HashSet<int> groupIds = new HashSet<int>();
