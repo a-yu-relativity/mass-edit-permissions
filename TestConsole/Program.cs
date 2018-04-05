@@ -82,7 +82,7 @@ namespace TestConsole
                         if (success)
                         {
                             successCount++;
-                            Console.WriteLine($"Successfully updated {successCount} of {workspaceIds.Count} workspaces");
+                            Console.WriteLine($"Successfully updated {successCount} of {workspaceIds.Count} workspaces. ({workspaceId})");
                         }
                     }
                 }
@@ -105,7 +105,7 @@ namespace TestConsole
             url = Console.ReadLine();
             Console.WriteLine("Please enter your Relativity username (e.g. albert.einstein@relativity.com).");
             user = Console.ReadLine();
-            Console.WriteLine("Please enter your Relativity password. This will be hidden, and please do not backspace.");
+            Console.WriteLine("Please enter your Relativity password. This will be hidden.");
             StringBuilder pwBuilder = new StringBuilder();
             // hide password
             while (true)
@@ -116,8 +116,15 @@ namespace TestConsole
                     Console.WriteLine();
                     break;
                 }
-                Console.Write("*");
-                pwBuilder.Append(key.KeyChar);
+                if (key.Key == ConsoleKey.Backspace)
+                {
+                    // remove last element
+                    pwBuilder.Remove(pwBuilder.Length - 1, 1);                    
+                }
+                else
+                {
+                    pwBuilder.Append(key.KeyChar);
+                }
             }
             pw = pwBuilder.ToString();
             
