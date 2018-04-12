@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -83,6 +84,12 @@ namespace TestConsole
                 workspaceIds = MassEditPermissions.Methods.GetAllWorkspaceIds(proxy);
             }
 
+            // write logs to file
+            string logPath = currDir + @"\" + "log.txt";
+            // write current date
+            string dateAsStr = Environment.NewLine + DateTime.Now.ToString(CultureInfo.CurrentCulture) + Environment.NewLine;
+            WriteToFile(logPath, dateAsStr);
+
             if (workspaceIds.Count > 0)
             {
                 // instantiate IPermissionManager
@@ -91,7 +98,6 @@ namespace TestConsole
                 using (IRSAPIClient rsapi = connHelper.GetRsapiClient())
                 {
                     int successCount = 0;
-                    var logMessages = new List<string>(); // store all logs
                     foreach (int workspaceId in workspaceIds)
                     {
                         bool success = false;
@@ -105,23 +111,33 @@ namespace TestConsole
                             string message =
                                 $"Successfully updated {successCount} of {workspaceIds.Count} workspaces. ({workspaceId})\n";
                             Console.Write(message);
-                            logMessages.Add(message);
+                            WriteToFile(logPath, message);
                         }
                         else
                         {
                             string message = $"Failed to update workspace with ID {workspaceId}\n";
                             Console.Write(message);
-                            logMessages.Add(message);
+                            WriteToFile(logPath, message);
                         }
                     }
-
-                    // write logs to file
-                    string logPath = currDir + @"\" + "log.txt";
-                    File.WriteAllLines(logPath, logMessages);
                 }
             }
 
             Pause();
+        }
+
+
+        /// <summary>
+        /// Write log message to file path
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="content"></param>
+        private static void WriteToFile(string file, string content)
+        {
+            using (var sw = new StreamWriter(path: file, append: true))
+            {
+                sw.WriteLine(content);
+            }
         }
 
 
