@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,20 +69,27 @@ namespace TestConsole
                 return;
             }
 
-            var groupIds = new List<int>();
-            foreach (var groupStr in groupsIdsStr)
-            {
-                int groupId = Int32.Parse(groupStr);
-                groupIds.Add(groupId);
-            }
+            List<int> groupIds = groupsIdsStr.Select(Int32.Parse).ToList();
 
             // get workspace IDs
             List<int> workspaceIds;
-
-            // instantiate IRSAPIClient
-            using (IRSAPIClient proxy = connHelper.GetRsapiClient())
+            const string workspaceFileName = "workspaces.txt";
+            string workspaceIdsFile = currDir + @"\" + workspaceFileName;
+            try
             {
-                workspaceIds = MassEditPermissions.Methods.GetAllWorkspaceIds(proxy);
+                // read from file if exists
+                string[] workspaceIdsStr = File.ReadAllLines(workspaceIdsFile);
+                workspaceIds = workspaceIdsStr.Select(Int32.Parse).ToList();
+            }
+            catch (IOException)
+            {
+                Console.WriteLine($"File for {workspaceIdsFile} does not exist.");
+                Console.WriteLine("Applying changes across all workspaces...");
+                // instantiate IRSAPIClient
+                using (IRSAPIClient proxy = connHelper.GetRsapiClient())
+                {
+                    workspaceIds = MassEditPermissions.Methods.GetAllWorkspaceIds(proxy);
+                }
             }
 
             // write logs to file
