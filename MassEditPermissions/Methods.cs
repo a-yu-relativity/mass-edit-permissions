@@ -95,10 +95,13 @@ namespace MassEditPermissions
 
                     // get the document permission
                     ObjectPermission docPerm = objPermissions.FirstOrDefault(x => x.Name == "Document");
-                    if (docPerm != null && docPerm.AddSelected)
+                    if (docPerm != null)
                     {
-                        // disable Add permission
-                        docPerm.AddSelected = false;
+                        if (docPerm.AddSelected)
+                        {
+                            // disable Add permission
+                            docPerm.AddSelected = false;
+                        }
                     }
                     
                     // make changes

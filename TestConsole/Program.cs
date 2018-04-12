@@ -20,9 +20,11 @@ namespace TestConsole
             }
             catch (Exception e)
             {
+                Console.WriteLine("An error occured:");
                 Console.WriteLine(e);
                 if (e.InnerException != null)
                 {
+                    Console.WriteLine("Inner exception:");
                     Console.WriteLine(e.InnerException);
                 }
             }
