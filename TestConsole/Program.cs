@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using kCura.Relativity.Client;
@@ -9,9 +10,26 @@ using Relativity.Services.ServiceProxy;
 
 namespace TestConsole
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
+        {
+            try
+            {
+                Caller();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                if (e.InnerException != null)
+                {
+                    Console.WriteLine(e.InnerException);
+                }
+            }
+        }
+
+
+        private static void Caller()
         {
             // introduction
             const string groupsFileName = "groups.txt";
@@ -33,7 +51,7 @@ namespace TestConsole
             }
             var connHelper = new ConnectionHelper(url, user, pw);
 
-            string currDir = Environment.CurrentDirectory;          
+            string currDir = Environment.CurrentDirectory;
             string groupsFilePath = currDir + @"\" + groupsFileName;
             string[] groupsIdsStr;
             try
@@ -45,7 +63,7 @@ namespace TestConsole
                 Console.WriteLine($"Failed to read file at {groupsFilePath}.");
                 Console.WriteLine($"Ensure that {groupsFileName} exists in the same folder as the executable.");
                 return;
-            }        
+            }
 
             var groupIds = new List<int>();
             foreach (var groupStr in groupsIdsStr)
@@ -71,6 +89,7 @@ namespace TestConsole
                 using (IRSAPIClient rsapi = connHelper.GetRsapiClient())
                 {
                     int successCount = 0;
+                    StringBuilder logMessages = new StringBuilder(); // store all logs
                     foreach (int workspaceId in workspaceIds)
                     {
                         bool success = false;
@@ -81,9 +100,23 @@ namespace TestConsole
                         if (success)
                         {
                             successCount++;
-                            Console.WriteLine($"Successfully updated {successCount} of {workspaceIds.Count} workspaces. ({workspaceId})");
+                            string message =
+                                $"Successfully updated {successCount} of {workspaceIds.Count} workspaces. ({workspaceId})\n";
+                            Console.Write(message);
+                            logMessages.Append(message);
+                        }
+                        else
+                        {
+                            string message = $"Failed to update workspace with ID {workspaceId}\n";
+                            Console.Write(message);
+                            logMessages.Append(message);
                         }
                     }
+
+                    // write logs to file
+                    string allLogs = logMessages.ToString();
+                    string logPath = currDir + @"\" + "log.txt";
+                    File.WriteAllText(logPath, allLogs);
                 }
             }
 
