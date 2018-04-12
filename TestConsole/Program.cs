@@ -30,6 +30,8 @@ namespace TestConsole
                     Console.WriteLine(e.InnerException);
                 }
             }
+
+            Pause();
         }
 
 
@@ -133,7 +135,6 @@ namespace TestConsole
                 }
             }
 
-            Pause();
         }
 
 
