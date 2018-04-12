@@ -91,7 +91,7 @@ namespace TestConsole
                 using (IRSAPIClient rsapi = connHelper.GetRsapiClient())
                 {
                     int successCount = 0;
-                    StringBuilder logMessages = new StringBuilder(); // store all logs
+                    var logMessages = new List<string>(); // store all logs
                     foreach (int workspaceId in workspaceIds)
                     {
                         bool success = false;
@@ -105,20 +105,19 @@ namespace TestConsole
                             string message =
                                 $"Successfully updated {successCount} of {workspaceIds.Count} workspaces. ({workspaceId})\n";
                             Console.Write(message);
-                            logMessages.Append(message);
+                            logMessages.Add(message);
                         }
                         else
                         {
                             string message = $"Failed to update workspace with ID {workspaceId}\n";
                             Console.Write(message);
-                            logMessages.Append(message);
+                            logMessages.Add(message);
                         }
                     }
 
                     // write logs to file
-                    string allLogs = logMessages.ToString();
                     string logPath = currDir + @"\" + "log.txt";
-                    File.WriteAllText(logPath, allLogs);
+                    File.WriteAllLines(logPath, logMessages);
                 }
             }
 
