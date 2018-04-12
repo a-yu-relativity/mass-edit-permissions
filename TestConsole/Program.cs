@@ -40,6 +40,9 @@ namespace TestConsole
             Console.WriteLine("This console app will disable the 'add document' permission for a list of groups.");
             Console.WriteLine($"Please ensure that there is a text file named '{groupsFileName}'.");
             Console.WriteLine("Each line in the file should indicate a group's Artifact ID");
+
+            const string workspaceFileName = "workspaces.txt";
+            Console.WriteLine($"(Optional) include a text file named '{workspaceFileName}' to specify a list of workspace Artifact IDs");
             string url = String.Empty;
             string user = String.Empty;
             string pw = String.Empty;
@@ -72,8 +75,7 @@ namespace TestConsole
             List<int> groupIds = groupsIdsStr.Select(Int32.Parse).ToList();
 
             // get workspace IDs
-            List<int> workspaceIds;
-            const string workspaceFileName = "workspaces.txt";
+            List<int> workspaceIds;           
             string workspaceIdsFile = currDir + @"\" + workspaceFileName;
             try
             {
@@ -85,7 +87,7 @@ namespace TestConsole
             {
                 Console.WriteLine($"File for {workspaceIdsFile} does not exist.");
                 Console.WriteLine("Applying changes across all workspaces...");
-                // instantiate IRSAPIClient
+                // query for all workspace IDs
                 using (IRSAPIClient proxy = connHelper.GetRsapiClient())
                 {
                     workspaceIds = MassEditPermissions.Methods.GetAllWorkspaceIds(proxy);
